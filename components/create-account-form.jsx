@@ -1,5 +1,6 @@
-"'use client'";
+"use client";
 
+import { signup } from "@/actions/signup-action";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,8 +12,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useFormState } from "react-dom";
 
 export function CreateAccountForm() {
+  const [formState, formAction] = useFormState(signup, {});
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
@@ -21,12 +25,13 @@ export function CreateAccountForm() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form>
+        <form action={formAction}>
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="Enter your email"
                 required
@@ -36,12 +41,20 @@ export function CreateAccountForm() {
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="Create a password"
                 required
               />
             </div>
           </div>
+          {formState.errors && (
+            <ul className="text-red-500 py-2">
+              {Object.keys(formState.errors).map((error) => (
+                <li key={error}>{formState.errors[error]}</li>
+              ))}
+            </ul>
+          )}
           <Button className="w-full mt-5" type="submit">
             Create Account
           </Button>
